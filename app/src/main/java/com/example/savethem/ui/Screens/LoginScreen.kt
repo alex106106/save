@@ -16,12 +16,14 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalWindowInfo
+import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.imageResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.core.graphics.blue
 import androidx.navigation.NavController
 import com.example.savethem.Model.registerModel
 import com.example.savethem.R
@@ -35,101 +37,155 @@ fun loginScreen(loginViewModel: LoginViewModel, navController: NavController, co
     var confirmPass by remember { mutableStateOf("juniorniko106") }
 
 
-
-    Box(
-        contentAlignment = Alignment.Center,
-        modifier = Modifier.fillMaxSize()
-
-    ) {
-        Card(
+        Box(
             modifier = Modifier
-                .fillMaxWidth()
-                .wrapContentHeight()
-                .padding(20.dp),
-            elevation = 8.dp,
-            shape = RoundedCornerShape(20.dp),
-            backgroundColor = Color.White
+                .fillMaxSize()
+                .background(colorResource(id = R.color.md_amber_50))
         ) {
-            Column(
-                modifier = Modifier
-                    .wrapContentHeight()
-            ) {
-                OutlinedTextField(
+            Column() {
+                Card(
                     modifier = Modifier
-                        .padding(start = 15.dp, end = 15.dp, top = 30.dp)
-                        .align(CenterHorizontally),
-                    value = emailUser,
-                    onValueChange = { emailUser = it },
-                    label = { Text("Email") },
-
-                )
-
-                OutlinedTextField(
-                    modifier = Modifier
-                        .padding(15.dp)
-                        .align(CenterHorizontally),
-                    value = passUser,
-                    onValueChange = { passUser = it },
-                    label = { Text("Password") }
-                )
-
-                OutlinedTextField(
-                    modifier = Modifier
-                        .padding(15.dp)
-                        .align(CenterHorizontally),
-                    value = confirmPass,
-                    onValueChange = { confirmPass = it },
-                    label = { Text("Confirm Password") }
-                )
-
-                Button(
-                    modifier = Modifier
-                        .padding(15.dp)
-                        .align(CenterHorizontally),
-                    colors = ButtonDefaults.buttonColors(
-                        backgroundColor = Color.DarkGray,
-                        contentColor = Color.White
-                    ),
-                    onClick = {
-                        if (emailUser.isNotEmpty() && passUser.isNotEmpty()) {
-                            loginViewModel.login(
-                                registerModel = registerModel(
-                                    email = emailUser,
-                                    pass = passUser,
-                                    name = "",
-                                    UUID = ""
-                                ),
-                                navController = navController,
-                                context = context.applicationContext
-                            )
-                        } else {
-                            Toast.makeText(context, "Please enter email and password", Toast.LENGTH_SHORT).show()
-                        }
-                        println("********************************************************************" +
-                                "*************************ERROR EN BUTTON LOGIN**************************" +
-                                "********************************************************************")
-                    }
+                        .fillMaxWidth()
+                        .wrapContentHeight()
+                        .padding(top = 20.dp, start = 20.dp, end = 20.dp),
+                    elevation = 8.dp,
+                    shape = RoundedCornerShape(120.dp)
                 ) {
-                    if (loginViewModel.isLoading.value) {
-                        CircularProgressIndicator(color = Color.Black)
-                    } else {
-                        Text("Login")
-                    }
+                    Image(
+                        painter = painterResource(
+                            id = R.drawable.icon),
+                        contentDescription = "")
                 }
 
-                ClickableText(
-                    modifier = Modifier
-                        .padding(15.dp)
-                        .align(CenterHorizontally),
-                    style = TextStyle(color = Color.White, fontSize = 10.sp),
-                    text = AnnotatedString("Don't have an account? Register"),
-                    onClick = {
-                        loginViewModel.navigateToRegister(navController)
+
+                Box(
+                    contentAlignment = Alignment.Center,
+                    modifier = Modifier.fillMaxSize()
+
+                ) {
+
+                    Column(
+                        modifier = Modifier
+                            .wrapContentHeight()
+                    ) {
+
+                        Card(
+                            modifier = Modifier
+                                .padding(15.dp),
+                            shape = RoundedCornerShape(25.dp),
+                            elevation = 10.dp
+
+                        ) {
+                            OutlinedTextField(
+                                modifier = Modifier
+                                    .background(
+                                        colorResource(id = R.color.md_grey_200),
+                                        shape = RoundedCornerShape(25.dp)
+                                    ),
+                                value = emailUser,
+                                shape = RoundedCornerShape(25.dp),
+                                onValueChange = { emailUser = it },
+                                label = { Text("Email") },
+                            )
+                        }
+
+
+                        Card(
+                            modifier = Modifier
+                                .padding(15.dp),
+                            shape = RoundedCornerShape(25.dp),
+                            elevation = 10.dp
+
+                        ) {
+                            OutlinedTextField(
+                                modifier = Modifier
+                                    .background(
+                                        colorResource(id = R.color.md_grey_200),
+                                        shape = RoundedCornerShape(25.dp)
+                                    ),
+                                value = passUser,
+                                shape = RoundedCornerShape(25.dp),
+                                onValueChange = { passUser = it },
+                                label = { Text("Password") }
+                            )
+                        }
+
+
+                        Card(
+                            modifier = Modifier
+                                .padding(15.dp),
+                            shape = RoundedCornerShape(25.dp),
+                            elevation = 10.dp
+
+                        ) {
+                            OutlinedTextField(
+                                modifier = Modifier
+                                    .background(
+                                        colorResource(id = R.color.md_grey_200),
+                                        shape = RoundedCornerShape(25.dp)
+                                    ),
+                                value = confirmPass,
+                                shape = RoundedCornerShape(25.dp),
+                                onValueChange = { confirmPass = it },
+                                label = { Text("Confirm Password") }
+                            )
+                        }
+
+
+                        Button(
+                            modifier = Modifier
+                                .padding(bottom = 15.dp)
+                                .align(CenterHorizontally),
+                            shape = RoundedCornerShape(20.dp),
+                            colors = ButtonDefaults.buttonColors(
+                                backgroundColor = colorResource(id = R.color.md_grey_200),
+                                    contentColor = Color.Black,
+                            ),
+                            onClick = {
+                                if (emailUser.isNotEmpty() && passUser.isNotEmpty()) {
+                                    loginViewModel.login(
+                                        registerModel = registerModel(
+                                            email = emailUser,
+                                            pass = passUser,
+                                            name = "",
+                                            UUID = ""
+                                        ),
+                                        navController = navController,
+                                        context = context.applicationContext
+                                    )
+                                } else {
+                                    Toast.makeText(context, "Please enter email and password", Toast.LENGTH_SHORT).show()
+                                }
+                                println("********************************************************************" +
+                                        "*************************ERROR EN BUTTON LOGIN**************************" +
+                                        "********************************************************************")
+                            }
+                        ) {
+                            if (loginViewModel.isLoading.value) {
+                                CircularProgressIndicator(color = Color.Black)
+                            } else {
+                                Text("Login")
+                            }
+                        }
+
+                        ClickableText(
+                            modifier = Modifier
+//                            .padding(15.dp)
+                                .align(CenterHorizontally),
+                            style = TextStyle(color = Color.Black, fontSize = 10.sp),
+                            text = AnnotatedString("Don't have an account? Register"),
+                            onClick = {
+                                loginViewModel.navigateToRegister(navController)
+                            }
+                        )
                     }
-                )
+
+                }
             }
         }
-    }
+
+
+
 
 
 }

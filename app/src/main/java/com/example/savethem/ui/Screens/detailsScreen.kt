@@ -412,7 +412,7 @@ fun list(id: String, mainViewModel: detailsViewModel) {
 
     var visible by remember { mutableStateOf(true) }
     var loading by remember { mutableStateOf(false) }
-    var numCommentsToShow by remember { mutableStateOf(5) }
+    var numCommentsToShow by remember { mutableStateOf(10) }
 
     AnimatedVisibility(
         visible,
