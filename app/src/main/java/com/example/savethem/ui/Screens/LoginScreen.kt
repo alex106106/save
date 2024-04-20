@@ -85,11 +85,11 @@ fun loginScreen(loginViewModel: LoginViewModel, navController: NavController, co
 //                        ) {
                             OutlinedTextField(
                                 modifier = Modifier
-                                    .padding(15.dp)
-                                    .background(
-                                        colorResource(id = R.color.md_grey_200),
-                                        shape = RoundedCornerShape(25.dp)
-                                    ),
+                                    .padding(15.dp),
+//                                    .background(
+//                                        colorResource(id = R.color.md_grey_200),
+//                                        shape = RoundedCornerShape(25.dp)
+//                                    ),
                                 value = emailUser,
                                 shape = RoundedCornerShape(25.dp),
                                 onValueChange = { emailUser = it },
@@ -131,11 +131,11 @@ fun loginScreen(loginViewModel: LoginViewModel, navController: NavController, co
 //                        ) {
                             OutlinedTextField(
                                 modifier = Modifier
-                                    .padding(15.dp)
-                                    .background(
-                                        colorResource(id = R.color.md_grey_200),
-                                        shape = RoundedCornerShape(25.dp)
-                                    ),
+                                    .padding(15.dp),
+//                                    .background(
+//                                        colorResource(id = R.color.md_grey_200),
+//                                        shape = RoundedCornerShape(25.dp)
+//                                    ),
                                 value = confirmPass,
                                 shape = RoundedCornerShape(25.dp),
                                 onValueChange = { confirmPass = it },
