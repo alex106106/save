@@ -32,6 +32,7 @@ import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.Font
@@ -194,7 +195,9 @@ fun MapView(viewModel: mainViewModel, navController: NavController) {
         }
     }
     Box(
-        modifier = Modifier.fillMaxSize()
+        modifier = Modifier
+            .fillMaxSize()
+            .background(colorResource(id = R.color.md_amber_100))
     ) {
 
         Column() {
@@ -457,7 +460,7 @@ fun TopAppBar(friendsViewModel: FriendsViewModel) {
                         )
                     }
                 } else {
-                    Text(text = "******", color = Color.Black, fontSize = 16.sp)
+                    Text(text = "NORM", color = Color.Black, fontSize = 16.sp)
                 }
             }
         },
@@ -471,7 +474,7 @@ fun TopAppBar(friendsViewModel: FriendsViewModel) {
             }
         },
         modifier = Modifier.height(52.dp),
-        backgroundColor = Color.Transparent,
+        backgroundColor = colorResource(id = R.color.md_amber_50),
         elevation = 0.dp
     )
 }

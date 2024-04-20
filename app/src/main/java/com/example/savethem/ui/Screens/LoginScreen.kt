@@ -19,8 +19,10 @@ import androidx.compose.ui.platform.LocalWindowInfo
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.imageResource
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.graphics.blue
@@ -47,13 +49,18 @@ fun loginScreen(loginViewModel: LoginViewModel, navController: NavController, co
                     modifier = Modifier
                         .fillMaxWidth()
                         .wrapContentHeight()
-                        .padding(top = 20.dp, start = 20.dp, end = 20.dp),
-                    elevation = 8.dp,
-                    shape = RoundedCornerShape(120.dp)
+                        .padding(top = 60.dp, bottom = 20.dp, end = 30.dp, start = 30.dp),
+                    elevation = 18.dp,
+                    shape = RoundedCornerShape(120.dp),
+                    backgroundColor = colorResource(id = R.color.md_amber_50)
                 ) {
                     Image(
+//                        modifier = Modifier
+//                            .fillMaxWidth()
+//                            .wrapContentHeight()
+//                            .padding(top = 60.dp, start = 20.dp),
                         painter = painterResource(
-                            id = R.drawable.icon),
+                            id = R.drawable.norma),
                         contentDescription = "")
                 }
 
@@ -69,15 +76,16 @@ fun loginScreen(loginViewModel: LoginViewModel, navController: NavController, co
                             .wrapContentHeight()
                     ) {
 
-                        Card(
-                            modifier = Modifier
-                                .padding(15.dp),
-                            shape = RoundedCornerShape(25.dp),
-                            elevation = 10.dp
-
-                        ) {
+//                        Card(
+//                            modifier = Modifier
+//                                .padding(15.dp),
+//                            shape = RoundedCornerShape(25.dp),
+//                            elevation = 10.dp
+//
+//                        ) {
                             OutlinedTextField(
                                 modifier = Modifier
+                                    .padding(15.dp)
                                     .background(
                                         colorResource(id = R.color.md_grey_200),
                                         shape = RoundedCornerShape(25.dp)
@@ -85,41 +93,45 @@ fun loginScreen(loginViewModel: LoginViewModel, navController: NavController, co
                                 value = emailUser,
                                 shape = RoundedCornerShape(25.dp),
                                 onValueChange = { emailUser = it },
-                                label = { Text("Email") },
+                                label = { Text(text = stringResource(id = R.string.email)) },
                             )
-                        }
+//                        }
 
 
-                        Card(
-                            modifier = Modifier
-                                .padding(15.dp),
-                            shape = RoundedCornerShape(25.dp),
-                            elevation = 10.dp
-
-                        ) {
+//                        Card(
+//                            modifier = Modifier
+//                                .padding(15.dp),
+//                            shape = RoundedCornerShape(25.dp),
+//                            elevation = 10.dp
+//
+//                        ) {
                             OutlinedTextField(
+//                                modifier = Modifier
+//                                    .background(
+//                                        colorResource(id = R.color.md_grey_200),
+//                                        shape = RoundedCornerShape(25.dp)),
                                 modifier = Modifier
-                                    .background(
-                                        colorResource(id = R.color.md_grey_200),
-                                        shape = RoundedCornerShape(25.dp)
-                                    ),
+                                    .padding(15.dp),
                                 value = passUser,
                                 shape = RoundedCornerShape(25.dp),
                                 onValueChange = { passUser = it },
-                                label = { Text("Password") }
+                                label = { Text(
+                                    text = stringResource(id = R.string.password)) },
+                                visualTransformation = PasswordVisualTransformation()
                             )
-                        }
+//                        }
 
 
-                        Card(
-                            modifier = Modifier
-                                .padding(15.dp),
-                            shape = RoundedCornerShape(25.dp),
-                            elevation = 10.dp
-
-                        ) {
+//                        Card(
+//                            modifier = Modifier
+//                                .padding(15.dp),
+//                            shape = RoundedCornerShape(25.dp),
+//                            elevation = 10.dp
+//
+//                        ) {
                             OutlinedTextField(
                                 modifier = Modifier
+                                    .padding(15.dp)
                                     .background(
                                         colorResource(id = R.color.md_grey_200),
                                         shape = RoundedCornerShape(25.dp)
@@ -127,9 +139,10 @@ fun loginScreen(loginViewModel: LoginViewModel, navController: NavController, co
                                 value = confirmPass,
                                 shape = RoundedCornerShape(25.dp),
                                 onValueChange = { confirmPass = it },
-                                label = { Text("Confirm Password") }
+                                label = { Text("Confirm Password") },
+                                visualTransformation = PasswordVisualTransformation()
                             )
-                        }
+//                        }
 
 
                         Button(
