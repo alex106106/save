@@ -17,10 +17,11 @@ import kotlinx.coroutines.withContext
 import java.util.UUID
 
 class RegisterViewModel : ViewModel() {
+
     fun registerUser(registerModel: registerModel): LiveData<String> {
         val auth = FirebaseAuth.getInstance()
         val result = MutableLiveData<String>()
-        val db = FirebaseFirestore.getInstance()
+        val database = FirebaseDatabase.getInstance()
 
         viewModelScope.launch {
             withContext(Dispatchers.IO) {
@@ -31,32 +32,32 @@ class RegisterViewModel : ViewModel() {
                     .addOnCompleteListener { task ->
                         if (task.isSuccessful) {
                             val current = FirebaseAuth.getInstance().currentUser
-                            val userDocumentRef = db.collection("users").document(current?.uid!!)
                             registerModel.UUID = current?.uid
 
-                            // Guardar los datos del usuario en Firestore
-                            userDocumentRef.set(registerModel)
+                            // Guardar los datos del usuario en Realtime Database
+                            val userDatabaseRef = database.getReference("users/${current?.uid!!}/userData")
+                            userDatabaseRef.setValue(registerModel)
                                 .addOnSuccessListener {
                                     // Obtener el token de registro de Firebase Cloud Messaging
                                     FirebaseMessaging.getInstance().token.addOnSuccessListener { token ->
                                         // Asignar el token a la propiedad "token" del modelo
                                         registerModel.token = token
 
-                                        // Actualizar los datos del usuario en Firestore
-                                        userDocumentRef.set(registerModel)
+                                        // Actualizar los datos del usuario en Realtime Database con el token
+                                        userDatabaseRef.setValue(registerModel)
                                             .addOnSuccessListener {
-                                                result.value = "success"
+                                                result.postValue("success")
                                             }
-                                            .addOnFailureListener { exception ->
-                                                result.value = "error"
+                                            .addOnFailureListener {
+                                                result.postValue("error")
                                             }
                                     }
                                 }
-                                .addOnFailureListener { exception ->
-                                    result.value = "error"
+                                .addOnFailureListener {
+                                    result.postValue("error")
                                 }
                         } else {
-                            result.value = "error"
+                            result.postValue("error")
                         }
                     }
             }

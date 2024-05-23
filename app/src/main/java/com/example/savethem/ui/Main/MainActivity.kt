@@ -10,6 +10,7 @@ import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.navigation.compose.rememberNavController
 import com.example.savethem.Model.MarkerModel
@@ -42,6 +43,8 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colors.background
                 ) {
+//                    AppContent()
+//                    test()
                     val navController = rememberNavController()
                     SetupNavHost(
                         navHostController = navController,
@@ -53,6 +56,9 @@ class MainActivity : ComponentActivity() {
                     friendsViewModel = FriendsVM,
                     idToFriend = idToFriend,
                     chatViewModel = ChatVM)
+//
+//                    val serviceIntent = Intent(applicationContext, BackgroundService::class.java)
+//                    applicationContext.startService(serviceIntent)
                 }
             }
         }

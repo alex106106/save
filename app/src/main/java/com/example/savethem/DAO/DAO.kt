@@ -1,6 +1,7 @@
 package com.example.savethem.DAO
 
 import android.content.Context
+import android.util.Log
 import android.widget.Toast
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -192,7 +193,7 @@ class DAO @Inject constructor() : AccessDAO {
             friendUid: String,
             friendName: String?,
             friendEmail: String?,
-            friendToken: String
+            friendToken: String?
         ) {
             val currentUserRef = FirebaseDatabase.getInstance().getReference("users").child(uid)
             val friendData = mapOf(
@@ -216,7 +217,7 @@ class DAO @Inject constructor() : AccessDAO {
                         val friendName = friendSnapshot.child("userData/name").value as? String
                         val friendToken = friendSnapshot.child("userData/token").value as? String
 
-                        if (friendUid != null && friendName != null && friendToken != null) {
+                        if (friendUid != null) {
                             addFriendCurrentUser(
                                 friendUid,
                                 friendName,
@@ -227,11 +228,13 @@ class DAO @Inject constructor() : AccessDAO {
                     }
                 } else {
                     // No se encontró un usuario con el correo electrónico especificado
+                    Log.d("AddFriend", "No user found with email: $friendEmail")
                 }
             }
 
             override fun onCancelled(error: DatabaseError) {
                 // Manejar la cancelación
+                Log.e("AddFriend", "DatabaseError: ${error.message}")
             }
         })
     }

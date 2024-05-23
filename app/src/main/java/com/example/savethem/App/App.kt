@@ -13,43 +13,9 @@ import dagger.hilt.android.HiltAndroidApp
 
 @HiltAndroidApp
 class App : Application() {
-//    override fun onCreate() {
-//        super.onCreate()
-//        println("********************************************************************" +
-//                "*************************ERROR EN APP**************************" +
-//                "********************************************************************")
-//        FirebaseApp.initializeApp(this)
-//        println("********************************************************************" +
-//                "*************************ERROR EN APP2**************************" +
-//                "********************************************************************")
-//        FirebaseApp.getInstance().persistenceKey
-//        println("********************************************************************" +
-//                "*************************ERROR EN APP 3**************************" +
-//                "********************************************************************")
-//        FirebaseDatabase.getInstance().setPersistenceEnabled(false);
-//        println("********************************************************************" +
-//                "*************************ERROR EN LOGIN VIEW MODEL**************************" +
-//                "********************************************************************")
-//    }
+	override fun onCreate() {
+		super.onCreate()
+		FirebaseApp.initializeApp(this)
+		val firebaseDatabase = FirebaseDatabase.getInstance()
+		firebaseDatabase.setPersistenceEnabled(true)	}
 }
-//class activity : Activity(){
-//    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-//        super.onActivityResult(requestCode, resultCode, data)
-//
-//        if (requestCode == RC_SIGN_IN) {
-//            val task = GoogleSignIn.getSignedInAccountFromIntent(data)
-//
-//            try {
-//                val account = task.getResult(ApiException::class.java)
-//                println("SUCCESS ****************************************************")
-//                // Autenticación exitosa, hacer algo con la cuenta de Google
-//            } catch (e: ApiException) {
-//                // Autenticación fallida, manejar el error
-//                println("ERROR ****************************************************")
-//
-//            }
-//        }
-//
-//    }
-//}
-

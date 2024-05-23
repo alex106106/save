@@ -1,28 +1,31 @@
 package com.example.savethem.ui.Screens
 
+import android.media.Rating
 import android.util.Log
+import android.widget.RatingBar.OnRatingBarChangeListener
 import androidx.compose.animation.*
 import androidx.compose.animation.core.FastOutSlowInEasing
 import androidx.compose.animation.core.LinearOutSlowInEasing
 import androidx.compose.animation.core.tween
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.horizontalScroll
+import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.ClickableText
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Info
+import androidx.compose.material.icons.filled.Star
 import androidx.compose.runtime.*
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.Alignment.Companion.CenterHorizontally
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.TextStyle
@@ -30,6 +33,7 @@ import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -63,60 +67,91 @@ fun detailsScreen(id: String, mainViewModel: detailsViewModel) {
     Box(
         modifier = Modifier
             .fillMaxSize()
+            .background(colorResource(id = R.color.md_amber_100))
     ) {
         LazyColumn(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(bottom = 70.dp)
         ){
             item {
-                Box {
-
-                    /* ************************************** */
-                    /* ******HEADER****** */
-                    /* ************************************** */
-
-
-
-
-                    Row(
+                Card(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .wrapContentHeight()
+                        .padding(3.dp),
+                    elevation = 8.dp,
+                    shape = RoundedCornerShape(5.dp),
+                    backgroundColor = Color.White
+                ) {
+                    Box(
                         modifier = Modifier
+                            .fillMaxWidth()
+                            .background(colorResource(id = R.color.md_amber_50)),
                     ) {
-
-                        Text(
-                            text = selectedCountry?.title ?: "",
-                            modifier = Modifier.weight(1f),
-                            textAlign = TextAlign.Center,
-                            fontSize = 30.sp,
-                            color = Color.Black,
-                            fontFamily = FontFamily(Font(R.font.josefinsanslight)),
-                        )
-                        Card(
+                        Row(
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .wrapContentHeight()
-                                .padding(6.dp)
-                                .weight(1f),
-                            elevation = 5.dp,
-                            shape = RoundedCornerShape(5.dp),
-                            backgroundColor = Color.White
+                                .padding(vertical = 16.dp),
+                            verticalAlignment = Alignment.CenterVertically
                         ) {
                             Text(
+                                text = selectedCountry?.title ?: "",
                                 modifier = Modifier
-                                    .padding(top = 25.dp, bottom = 25.dp),
-                                fontFamily = FontFamily(Font(R.font.josefinsansbold)),
-                                text = selectedCountry?.gLevel.toString(),
+                                    .padding(start = 16.dp)
+                                    .weight(1f),
                                 textAlign = TextAlign.Center,
-                                fontSize = 40.sp,
-                                color = Color.Black
-
+                                fontSize = 30.sp,
+                                color = Color.Black,
+                                fontFamily = FontFamily(Font(R.font.josefinsanslight)),
+                                maxLines = 1,
+                                overflow = TextOverflow.Ellipsis
+                            )
+                            Box(
+                                modifier = Modifier
+                                    .size(100.dp)
+                                    .padding(end = 16.dp),
+                                contentAlignment = Alignment.Center,
+                                content = {
+                                    Card(
+                                        modifier = Modifier
+                                            .fillMaxSize(),
+                                        elevation = 8.dp,
+                                        shape = RoundedCornerShape(8.dp),
+                                        backgroundColor = Color.White
+                                    ) {
+                                        Box(
+                                            modifier = Modifier
+                                                .background(
+                                                    color = Color.LightGray,
+                                                    shape = RoundedCornerShape(8.dp)
+                                                )
+                                                .fillMaxSize()
+                                                .padding(16.dp),
+                                            contentAlignment = Alignment.Center
+                                        ) {
+                                            val levelIcon = when (selectedCountry?.gLevel) {
+                                                "BAJO" -> R.drawable.like
+                                                "ALTO" -> R.drawable.send
+                                                "MEDIO" -> R.drawable.user
+                                                else -> R.drawable.turismo
+                                            }
+                                            Image(
+                                                painter = painterResource(id = levelIcon),
+                                                contentDescription = null,
+                                                modifier = Modifier.size(64.dp)
+                                            )
+                                        }
+                                    }
+                                }
                             )
                         }
-                    }
 
-                    /* ************************************** */
-                    /* ************************************** */
-                    /* ************************************** */
+
+
+                        /* ************************************** */
+                        /* ************************************** */
+                        /* ************************************** */
+                    }
                 }
             }
             item {
@@ -132,172 +167,128 @@ fun detailsScreen(id: String, mainViewModel: detailsViewModel) {
                     shape = RoundedCornerShape(5.dp),
                     backgroundColor = Color.White
                 ) {
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .background(colorResource(id = R.color.md_amber_50)),
+                        ) {
                     Column() {
-                        Text(
+//                        Rate the state
+                        Row(
                             modifier = Modifier
-                                .padding(10.dp),
-                            fontWeight = FontWeight.Bold,
-                            text = "Crime Statistics ")
-                        barras(mainViewModel)
+                                .padding(8.dp)
+                        ) {
+                            Icon(
+                                painter = painterResource(id = R.drawable.rate),
+                                contentDescription = "",
+                                modifier = Modifier.size(24.dp) // Ajusta el tamaño del icono según sea necesario
+                            )
+                            Text(
+                                text = "Rate the state",
+                                fontFamily = FontFamily(Font(R.font.josefinsansbold)),
+                                modifier = Modifier.padding(end = 8.dp) // Agrega espacio entre el texto y el icono
+                            )
+                        }
+                            // Botones para la calificación
+                            Row(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(bottom = 16.dp),
+                                horizontalArrangement = Arrangement.SpaceEvenly
+                            ) {
+                                Button(
+                                    modifier = Modifier
+                                        .weight(1f),
+                                    shape = RoundedCornerShape(20.dp),
+                                    colors = ButtonDefaults.buttonColors(
+                                        backgroundColor = colorResource(id = R.color.md_green_500),
+                                        contentColor = Color.Black,
+                                    ),
+                                    onClick = {}
+                                ) {
+                                    Text(text = "Low")
+                                }
+
+                                Button(
+                                    modifier = Modifier
+                                        .weight(1f),
+                                    shape = RoundedCornerShape(20.dp),
+                                    colors = ButtonDefaults.buttonColors(
+                                        backgroundColor = colorResource(id = R.color.md_yellow_500),
+                                        contentColor = Color.Black,
+                                    ),
+                                    onClick = {}
+                                ) {
+                                    Text(text = "Medium")
+                                }
+
+                                Button(
+                                    modifier = Modifier
+                                        .weight(1f),
+                                    shape = RoundedCornerShape(20.dp),
+                                    colors = ButtonDefaults.buttonColors(
+                                        backgroundColor = colorResource(id = R.color.md_red_500),
+                                        contentColor = Color.Black,
+                                    ),
+                                    onClick = {}
+                                ) {
+                                    Text(text = "High")
+                                }
+                            }
+
+                            Row(
+                                modifier = Modifier
+                                    .padding(8.dp)
+                            ) {
+                                Icon(
+                                    painter = painterResource(id = R.drawable.crime),
+                                    contentDescription = "",
+                                    modifier = Modifier.size(24.dp) // Ajusta el tamaño del icono según sea necesario
+                                )
+                                Text(
+                                    text = "Crime Statistics",
+                                    fontFamily = FontFamily(Font(R.font.josefinsansbold)),
+                                    modifier = Modifier.padding(end = 8.dp) // Agrega espacio entre el texto y el icono
+                                )
+                            }
+                            barras(mainViewModel)
+                        }
+
 
                     }
-//                    Column() {
-//                        Row(modifier = Modifier.fillMaxWidth()) {
-//                            Text(
-//                                text = "Femicide",
-//                                modifier = Modifier
-//                                    .weight(1f)
-//                                    .padding(5.dp),
-//                                color = Color.Black
-//                            )
-//
-//
-//                            Text(
-//                                text = selectedCountry?.femicide?.level ?: "",
-//                                modifier = Modifier.weight(1f),
-//                                color = Color.Black
-//                            )
-//
-//
-//
-//                            Text(
-//                                text = selectedCountry?.femicide?.percentage.toString(),
-//                                modifier = Modifier
-//                                    .weight(1f)
-//                                    .padding(5.dp),
-//                                textAlign = TextAlign.End,
-//                                color = Color.Black
-//
-//                            )
-//                        }
-//                        Row(modifier = Modifier.fillMaxWidth()) {
-//
-//                            Text(
-//                                text = "Vehicle Theft",
-//                                modifier = Modifier
-//                                    .weight(1f)
-//                                    .padding(5.dp),
-//                                color = Color.Black
-//                            )
-//
-//                            Text(
-//                                text = selectedCountry?.vehicleTheft?.level ?: "",
-//                                modifier = Modifier
-//                                    .weight(1f)
-//                                    .padding(5.dp),
-//                                color = Color.Black
-//
-//                            )
-//
-//                            Text(
-//                                text = selectedCountry?.vehicleTheft?.percentage.toString(),
-//                                modifier = Modifier
-//                                    .weight(1f)
-//                                    .padding(5.dp),
-//                                textAlign = TextAlign.End,
-//                                color = Color.Black
-//
-//                            )
-//                        }
-//                        Row(modifier = Modifier.fillMaxWidth()) {
-//
-//                            Text(
-//                                text = "Homicide",
-//                                modifier = Modifier
-//                                    .weight(1f)
-//                                    .padding(5.dp),
-//                                color = Color.Black
-//                            )
-//
-//                            Text(
-//                                text = selectedCountry?.homicide?.level ?: "",
-//                                modifier = Modifier
-//                                    .weight(1f)
-//                                    .padding(5.dp),
-//                                color = Color.Black
-//
-//                            )
-//
-//                            Text(
-//                                text = selectedCountry?.homicide?.percentage.toString(),
-//                                modifier = Modifier
-//                                    .weight(1f)
-//                                    .padding(5.dp),
-//                                textAlign = TextAlign.End,
-//                                color = Color.Black
-//
-//                            )
-//                        }
-//                        Row(modifier = Modifier.fillMaxWidth()) {
-//
-//                            Text(
-//                                text = "kidnapping",
-//                                modifier = Modifier
-//                                    .weight(1f)
-//                                    .padding(5.dp),
-//                                color = Color.Black
-//                            )
-//
-//                            Text(
-//                                text = selectedCountry?.kidnapping?.level ?: "",
-//                                modifier = Modifier
-//                                    .weight(1f)
-//                                    .padding(5.dp),
-//                                color = Color.Black
-//
-//                            )
-//
-//                            Text(
-//                                text = selectedCountry?.kidnapping?.percentage.toString(),
-//                                modifier = Modifier
-//                                    .weight(1f)
-//                                    .padding(5.dp),
-//                                textAlign = TextAlign.End,
-//                                color = Color.Black
-//
-//                            )
-//                        }
-//                        Row(modifier = Modifier.fillMaxWidth()) {
-//                            Text(
-//                                text = "Rape",
-//                                modifier = Modifier
-//                                    .weight(1f)
-//                                    .padding(5.dp),
-//                                color = Color.Black
-//                            )
-//                            Text(
-//                                text = selectedCountry?.rape?.level ?: "",
-//                                modifier = Modifier
-//                                    .weight(1f)
-//                                    .padding(5.dp),
-//                                color = Color.Black
-//
-//                            )
-//                            Text(
-//                                text = selectedCountry?.rape?.percentage.toString(),
-//                                modifier = Modifier
-//                                    .weight(1f)
-//                                    .padding(5.dp),
-//                                textAlign = TextAlign.End,
-//                                color = Color.Black
-//
-//                            )
-//                        }
-//                    }
                 }
-
-                /* ************************************** */
-                /* ************************************** */
-                /* ************************************** */
             }
             item {
-                /* ************************************** */
-                /* ******NEWS****** */
-                /* ************************************** */
                 Box() {
-                    Row(
+                    Column(
                     ) {
-                            Card(
+
+                        Button(
+                            modifier = Modifier
+                                .align(CenterHorizontally)
+                                .padding(vertical = 8.dp),
+                            shape = RoundedCornerShape(20.dp),
+                            colors = ButtonDefaults.buttonColors(
+                                backgroundColor = colorResource(id = R.color.md_amber_500)
+                            ),
+                            onClick = { /* Acción al hacer clic en el botón */ },
+//                            modifier = Modifier.padding(vertical = 8.dp) // Agrega espacio vertical alrededor del botón
+                        ) {
+                            Row(verticalAlignment = Alignment.CenterVertically) {
+                                Text(
+                                    text = "Become a journalist",
+                                    fontFamily = FontFamily(Font(R.font.josefinsansbold)),
+                                    modifier = Modifier.padding(end = 8.dp) // Agrega espacio entre el texto y el icono
+                                )
+                                Icon(
+                                    painter = painterResource(id = R.drawable.journailst),
+                                    contentDescription = "",
+                                    modifier = Modifier.size(24.dp) // Ajusta el tamaño del icono según sea necesario
+                                )
+                            }
+                        }
+
+                        Card(
                                 modifier = Modifier
                                     .padding(6.dp),
                                 elevation = 8.dp,
@@ -313,7 +304,7 @@ fun detailsScreen(id: String, mainViewModel: detailsViewModel) {
                                         contentDescription = "maps"
                                     )
                                     Text(
-                                        text = "Tourism",
+                                        text = "News",
                                         textAlign = TextAlign.Center,
                                         fontSize = 35.sp,
                                         color = Color.Black,
@@ -323,88 +314,49 @@ fun detailsScreen(id: String, mainViewModel: detailsViewModel) {
                             }
                     }
                 }
-
-                /* ************************************** */
-                /* ************************************** */
-                /* ************************************** */
-            }
-            item {
-                Spacer(modifier = Modifier.height(8.dp))
-            }
-            item {
-                /* ************************************** */
-                /* ******LIST COMMENTS****** */
-                /* ************************************** */
-                list(id = id, mainViewModel = mainViewModel)
-
-                /* ************************************** */
-                /* ************************************** */
-                /* ************************************** */
             }
         }
 
     }
-    Box(
-        modifier = Modifier
-            .fillMaxSize(),
-        contentAlignment = Alignment.BottomCenter
-    ) {
-        var comment by remember { mutableStateOf("") }
-        var isButtonVisible by remember { mutableStateOf(false) }
 
-        Card() {
-            OutlinedTextField(
+    }
+
+@Composable
+fun RatingBar(
+    maxStars: Int = 5,
+    initialRating: Int = 0,
+    onRatingChanged: (Int) -> Unit
+) {
+    var rating by remember { mutableStateOf(initialRating) }
+    Row {
+       repeat(maxStars){index ->
+           val isSelected = index < rating
+           val starIcon = if (isSelected) Icons.Filled.Star else Icons.Filled.Star
+           val startColor = if (isSelected) Color.Yellow else Color.Gray
+           Icon(
+               imageVector = starIcon,
+               contentDescription = null,
+               tint = startColor,
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(start = 15.dp, end = 15.dp),
-                value = comment,
-                onValueChange = {
-                    comment = it
-                    isButtonVisible = it.isNotEmpty() // Muestra el botón solo si hay texto
-                },
-                label = { Text("Comment") },
-                trailingIcon = {
-                    Row() {
-                        AnimatedVisibility(
-                            visible = isButtonVisible,
-                            enter = fadeIn(),
-                            exit = fadeOut()
-                        ) {
-                            IconButton(
-                                onClick = {
-                                    // Lógica del botón
-                                    mainViewModel.addComments(
-                                        id = id,
-                                        commentsModel = CommentsModel(
-                                            "",
-                                            "",
-                                            comm?.content ?: comment,
-                                            name = name
-                                        )
-                                    )
-                                    comment = "" // Vacía el texto del campo
-                                    isButtonVisible = false // Oculta el botón
-                                }
-                            ) {
-                                Icon(
-                                    painter = painterResource(id = R.drawable.send),
-                                    contentDescription = "SEND"
-                                )
-                            }
-                        }
+                    .clickable {
+                        rating = index + 1
+                        onRatingChanged(rating)
                     }
-                },
-                colors = TextFieldDefaults.outlinedTextFieldColors(
-                    focusedBorderColor = Color.Black, // Cambia el color del borde cuando el campo está enfocado
-                    unfocusedBorderColor = Color.Gray,
-                    textColor = Color.White,
-                    cursorColor = Color.Black,
-                    placeholderColor = Color.Black// Cambia el color del borde cuando el campo no está enfocado
-                )
-            )
-        }
+                    .padding(4.dp)
+           )
+       }
     }
-    }
+}
+@Composable
+fun start(){
+    var currentRating by remember { mutableStateOf(0) }
+    RatingBar(
+        maxStars = 5,
+        initialRating = currentRating,
+        onRatingChanged = {newRating ->
+            currentRating = newRating
+        })
+}
 
 @Composable
 fun list(id: String, mainViewModel: detailsViewModel) {
@@ -556,3 +508,126 @@ data class Datos(
     val label: String,
     val value: Float
 )
+
+@OptIn(ExperimentalMaterialApi::class)
+@Composable
+fun Comments(id: String, mainViewModel: detailsViewModel){
+    val comm by mainViewModel.addComment.observeAsState()
+    val name by mainViewModel.name.collectAsState()
+    val sheetState = rememberModalBottomSheetState(ModalBottomSheetValue.Hidden)
+    val scope = rememberCoroutineScope()
+    ModalBottomSheetLayout(
+        sheetState = sheetState,
+        sheetContent = {
+            Card(
+                modifier = Modifier
+                    .padding(top = 30.dp, bottom = 30.dp, start = 14.dp, end = 14.dp),
+                elevation = 8.dp,
+                shape = RoundedCornerShape(topStart = 8.dp, topEnd = 8.dp, bottomEnd = 8.dp, bottomStart = 8.dp)
+            ) {
+                Box(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .background(Color.White)
+                ) {
+                    list(id = id, mainViewModel = mainViewModel)
+                    Box(
+                        modifier = Modifier
+                            .fillMaxSize(),
+                        contentAlignment = Alignment.BottomCenter
+                    ) {
+                        var comment by remember { mutableStateOf("") }
+                        var isButtonVisible by remember { mutableStateOf(false) }
+
+                        Card() {
+                            OutlinedTextField(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(start = 15.dp, end = 15.dp),
+                                value = comment,
+                                onValueChange = {
+                                    comment = it
+                                    isButtonVisible = it.isNotEmpty() // Muestra el botón solo si hay texto
+                                },
+                                label = { Text("Comment") },
+                                trailingIcon = {
+                                    Row() {
+                                        AnimatedVisibility(
+                                            visible = isButtonVisible,
+                                            enter = fadeIn(),
+                                            exit = fadeOut()
+                                        ) {
+                                            IconButton(
+                                                onClick = {
+                                                    // Lógica del botón
+                                                    mainViewModel.addComments(
+                                                        id = id,
+                                                        commentsModel = CommentsModel(
+                                                            "",
+                                                            "",
+                                                            comm?.content ?: comment,
+                                                            name = name
+                                                        )
+                                                    )
+                                                    comment = "" // Vacía el texto del campo
+                                                    isButtonVisible = false // Oculta el botón
+                                                }
+                                            ) {
+                                                Icon(
+                                                    painter = painterResource(id = R.drawable.send),
+                                                    contentDescription = "SEND"
+                                                )
+                                            }
+                                        }
+                                    }
+                                },
+                                colors = TextFieldDefaults.outlinedTextFieldColors(
+                                    focusedBorderColor = Color.Black, // Cambia el color del borde cuando el campo está enfocado
+                                    unfocusedBorderColor = Color.Gray,
+                                    textColor = Color.White,
+                                    cursorColor = Color.Black,
+                                    placeholderColor = Color.Black// Cambia el color del borde cuando el campo no está enfocado
+                                )
+                            )
+                        }
+                    }
+                }
+            }
+        },
+    sheetBackgroundColor = Color.Transparent,
+    content = {
+      Scaffold(
+          topBar = { androidx.compose.material.TopAppBar(
+              modifier = Modifier.height(25.dp),
+              backgroundColor = colorResource(id = R.color.md_amber_50),
+              elevation = 50.dp
+          ) {
+
+          }},
+      content = {
+        detailsScreen(id = id, mainViewModel = mainViewModel)
+      },
+      floatingActionButton = {
+          FloatingActionButton(
+              onClick = { scope.launch { sheetState.show() } },
+                content = {
+                    Icon(painterResource(
+                        id = R.drawable.friends),
+                        contentDescription = "Add friend")
+                },
+          backgroundColor = colorResource(id = R.color.md_amber_50))
+      })
+    })
+}
+
+
+@Composable
+fun asddd(){
+    Box(
+        Modifier
+            .background(colorResource(id = R.color.md_red_500))
+            .fillMaxSize()
+    ) {
+
+    }
+}

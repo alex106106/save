@@ -1,9 +1,11 @@
 package com.example.savethem.ViewModel
 
+import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.savethem.Model.registerModel
 import com.example.savethem.Repository.Repository
+import com.example.savethem.call.enviar
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -32,6 +34,13 @@ class FriendsViewModel @Inject constructor(
 			withContext(Dispatchers.IO){
 				val friends = DAO.getFriends()
 				_friends.value = friends
+			}
+		}
+	}
+	fun enviarNotificaciones(context: Context, tokens: List<String>){
+		viewModelScope.launch {
+			tokens.forEach { token ->
+//				enviar(context, token)
 			}
 		}
 	}

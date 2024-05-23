@@ -20,6 +20,7 @@ class constants {
         const val KEY_GAME_ID = "com.example.savethem"
         const val CALL_SCREEN = "call_screen"
         const val CHAT_SCREEN = "chat_screen"
+        const val TEST_SCREEN = "test_screen"
 //        val messageID = UUID.randomUUID().toString()
         val time = System.currentTimeMillis()
     }

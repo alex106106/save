@@ -17,16 +17,15 @@ import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.Close
-import androidx.compose.material.icons.filled.Edit
-import androidx.compose.material.icons.filled.Search
+import androidx.compose.material.icons.filled.*
 import androidx.compose.runtime.*
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.layout.ContentScale
@@ -49,6 +48,7 @@ import com.example.savethem.R
 import com.example.savethem.ViewModel.FriendsViewModel
 import com.example.savethem.ViewModel.mainViewModel
 import com.example.savethem.call.boton
+import com.example.savethem.call.tokensFriends
 import com.example.savethem.navigation.Screens
 import com.example.savethem.notification.createNotificationChannel
 import com.example.savethem.notification.showSimpleNotificationWithTapAction
@@ -58,6 +58,10 @@ import com.google.android.gms.location.LocationServices
 import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.LatLng
+import com.google.firebase.FirebaseApp
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.ktx.Firebase
 import com.google.maps.android.compose.GoogleMap
 import com.google.maps.android.compose.Marker
 import com.google.maps.android.compose.MarkerState
@@ -201,144 +205,14 @@ fun MapView(viewModel: mainViewModel, navController: NavController) {
     ) {
 
         Column() {
-            Box(modifier = Modifier.height(56.dp)) {
-                // Crea el botón
-                Button(
-                    onClick = { expanded = true },
-                    modifier = Modifier.fillMaxWidth(),
-                    colors = ButtonDefaults.buttonColors(
-                        backgroundColor = Color.DarkGray, // Cambia el color de fondo del botón
-                        contentColor = Color.White // Cambia el color del contenido del botón (texto/icono)
-                    ),
-                    content = {
-                        Text(if (selectedRiskLevel.isEmpty()) "Select risk" else selectedRiskLevel)
-                    }
-                )
 
-                // Crea el menú desplegable
-                DropdownMenu(
-                    expanded = expanded,
-                    onDismissRequest = { expanded = false },
-                    modifier = Modifier.fillMaxWidth()
-                ) {
-                    DropdownMenuItem(onClick = {
-                        selectedRiskLevel = "ALTO"
-                        expanded = false
-                    }) {
-                        Text("ALTO")
-                    }
-                    DropdownMenuItem(onClick = {
-                        selectedRiskLevel = "MEDIO"
-                        expanded = false
-                    }) {
-                        Text("MEDIO")
-                    }
-                    DropdownMenuItem(onClick = {
-                        selectedRiskLevel = "BAJO"
-                        expanded = false
-                    }) {
-                        Text("BAJO")
-                    }
-                }
-            }
-            Row(modifier = Modifier.fillMaxWidth()) {
-                Card(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .wrapContentHeight()
-                        .padding(6.dp)
-                        .weight(1f),
-                    elevation = 5.dp,
-                    shape = RoundedCornerShape(5.dp),
-                    backgroundColor = Color.White
-                ) {
-                    Column(modifier = Modifier.
-                    padding(start = 10.dp, bottom =  10.dp)) {
-                        Text(text = "You are in:",
-                            fontFamily = FontFamily(Font(R.font.josefinsansbold)),
-                            color = Color.Black,
-                            textAlign = TextAlign.Center)
-                        Text(text = stateName,
-                            color = Color.Black,
-                            fontFamily = FontFamily(Font(R.font.josefinsansitalicvariablefontwght)),
-                            textAlign = TextAlign.Center)
-                    }
-                }
-
-                Card(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .wrapContentHeight()
-                        .padding(6.dp)
-                        .weight(1f),
-                    elevation = 5.dp,
-                    shape = RoundedCornerShape(5.dp),
-                    backgroundColor = Color.White
-                ) {
-                    Column(modifier = Modifier.
-                    padding( bottom =  10.dp)) {
-                        Text(text = "You selected risk:",
-                            fontFamily = FontFamily(Font(R.font.josefinsansbold)),
-                            color = Color.Black,
-                            textAlign = TextAlign.Center)
-
-                        Text(text = selectedRiskLevel,
-                            color = Color.Black,
-                            fontFamily = FontFamily(Font(R.font.josefinsansitalicvariablefontwght)),
-                            textAlign = TextAlign.Center,
-                            modifier = Modifier.padding(start = 10.dp))
-                    }
-                }
-            }
-
-
-            // Filtra los marcadores en base al nivel de riesgo seleccionado
+//            // Filtra los marcadores en base al nivel de riesgo seleccionado
             val filteredMarkers = if (selectedRiskLevel.isNotEmpty()) {
                 markerInfoList.filter { it.gLevel == selectedRiskLevel }
             } else {
                 markerInfoList
             }
 
-
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .size(50.dp)
-            ) {
-                Card(
-                    modifier = Modifier
-                        .align(Alignment.Center)
-                        .size(50.dp),
-                    elevation = 18.dp,
-                    shape = RoundedCornerShape(25.dp),
-                    backgroundColor = Color.Red
-                ) {
-                    IconButton(
-                        modifier = Modifier
-                            .align(Alignment.Center)
-                            .size(50.dp),
-                        onClick = { stopLoop = true },
-                        enabled = !stopLoop
-                    ) {
-                        Icon(
-                            modifier = Modifier
-                                .size(50.dp),
-                            painter = painterResource(id = R.drawable.stop), contentDescription = "stop")
-                    }
-                }
-            }
-
-//            Button(
-//                onClick = { stopLoop = true },
-//                enabled = !stopLoop,
-//                modifier = Modifier.padding(16.dp),
-//                colors = ButtonDefaults.buttonColors(
-//                    backgroundColor = Color.DarkGray, // Cambia el color de fondo del botón
-//                    contentColor = Color.White // Cambia el color del contenido del botón (texto/icono)
-//                ),
-//            ) {
-//                Text("Detener alarma")
-//            }
             Card(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -363,33 +237,6 @@ fun MapView(viewModel: mainViewModel, navController: NavController) {
                             // Filtrar markers en base al nivel de riesgo seleccionado
                             if (selectedRiskLevel.isNotEmpty() && gLevel != selectedRiskLevel) {
                                 return@forEach // Saltar a la siguiente iteración
-                            }
-
-                            // Filtrar markers en base al estado del campo de texto
-//                    if (stateName.isNotBlank() && !markerInfo.title!!.contains(stateName, ignoreCase = true)) {
-//                        return@forEach // Saltar a la siguiente iteración
-//                    }
-
-                            LaunchedEffect(Unit) {
-                                createNotificationChannel(channelId, context)
-                                // Comprobar la coincidencia de valores en un bucle infinito
-                                while (!stopLoop) {
-                                    val textField1Value = stateName
-
-                                    if (textField1Value.isNotEmpty() && textField1Value == markerInfo.title) {
-                                        if (gLevel == "ALTO") {
-                                            // Mostrar la notificación si hay una coincidencia
-                                            showSimpleNotificationWithTapAction(
-                                                context,
-                                                channelId,
-                                                notificationId,
-                                                "You are in",
-                                                "${markerInfo.title}"
-                                            )
-                                        }
-                                    }
-                                    delay(1000) // Esperar un segundo antes de comprobar la coincidencia de nuevo
-                                }
                             }
 
 
@@ -427,7 +274,9 @@ fun MapView(viewModel: mainViewModel, navController: NavController) {
 fun TopAppBar(friendsViewModel: FriendsViewModel) {
     var searchText by remember { mutableStateOf("") }
     var isSearchExpanded by remember { mutableStateOf(false) }
+    var expandedMenu by remember { mutableStateOf(false) }
 //    var idToFriend = ""
+    val focusRequester = remember { FocusRequester() }
 
     TopAppBar(
         title = {
@@ -444,7 +293,9 @@ fun TopAppBar(friendsViewModel: FriendsViewModel) {
                             value = searchText,
                             onValueChange = { searchText = it },
                             placeholder = { Text(text = "Add") },
-                            modifier = Modifier.fillMaxWidth(),
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .focusRequester(focusRequester),
                             textStyle = TextStyle(color = Color.Black, fontSize = 14.sp),
                             colors = TextFieldDefaults.outlinedTextFieldColors(
                                 cursorColor = Color.Black,
@@ -455,6 +306,8 @@ fun TopAppBar(friendsViewModel: FriendsViewModel) {
                             keyboardActions = KeyboardActions(
                                 onDone = {
                                     friendsViewModel.addFriend(registerModel(), searchText)
+                                    // Ocultar el teclado después de enviar el texto
+                                    focusRequester.freeFocus()
                                 }
                             )
                         )
@@ -462,15 +315,72 @@ fun TopAppBar(friendsViewModel: FriendsViewModel) {
                 } else {
                     Text(text = "NORM", color = Color.Black, fontSize = 16.sp)
                 }
+                Button(onClick = {
+                    friendsViewModel.addFriend(registerModel(), "alexisgalindo108@gmail.com")
+                }) {
+                    Text(text = "add")
+                }
             }
         },
+
         actions = {
-            IconButton(onClick = { isSearchExpanded = !isSearchExpanded }) {
-                Icon(
-                    imageVector = if (isSearchExpanded) Icons.Default.Close else Icons.Default.Search,
-                    contentDescription = "Search",
+            Row() {
+                IconButton(onClick = { isSearchExpanded = !isSearchExpanded }) {
+                    Icon(
+                        imageVector = if (isSearchExpanded) Icons.Default.Close else Icons.Default.Search,
+                        contentDescription = "Search",
+                        tint = Color.Black
+                    )
+                }
+                IconButton(onClick = { expandedMenu = true }) {
+                    Icon(
+                        imageVector = Icons.Default.MoreVert,
+                        contentDescription = "",
                     tint = Color.Black
-                )
+                    )
+                    DropdownMenu(
+                        expanded = expandedMenu,
+                        onDismissRequest = { expandedMenu = false },
+                        modifier = Modifier.fillMaxWidth()
+                    ) {
+                        // Crea el botón dentro del menú desplegable
+                        Box(
+                            modifier = Modifier.height(56.dp)
+                        ) {
+                            Button(
+                                onClick = { expandedMenu = true },
+                                modifier = Modifier.fillMaxWidth(),
+                                colors = ButtonDefaults.buttonColors(
+                                    backgroundColor = Color.DarkGray, // Cambia el color de fondo del botón
+                                    contentColor = Color.White // Cambia el color del contenido del botón (texto/icono)
+                                ),
+                                content = {
+                                    Text("")
+                                }
+                            )
+                        }
+
+                        // Agrega los elementos del menú desplegable
+                        DropdownMenuItem(onClick = {
+
+                        }) {
+                            Text("ALTO")
+                        }
+                        DropdownMenuItem(onClick = {
+//                            selectedRiskLevel = "MEDIO"
+//                            expanded = false
+                        }) {
+                            Text("MEDIO")
+                        }
+                        DropdownMenuItem(onClick = {
+//                            selectedRiskLevel = "BAJO"
+//                            expanded = false
+                        }) {
+                            Text("BAJO")
+                        }
+                    }
+
+                }
             }
         },
         modifier = Modifier.height(52.dp),
@@ -486,7 +396,10 @@ fun TopAppBar(friendsViewModel: FriendsViewModel) {
 fun friendList(viewModel: mainViewModel, navController: NavController, friendsViewModel: FriendsViewModel) {
     val sheetState = rememberModalBottomSheetState(ModalBottomSheetValue.Hidden)
     val scope = rememberCoroutineScope()
-        ModalBottomSheetLayout(
+    val context = LocalContext.current
+    FirebaseApp.initializeApp(context)
+
+    ModalBottomSheetLayout(
             sheetState = sheetState,
             sheetContent = {
                 // Contenido de la pantalla emergente
@@ -502,6 +415,9 @@ fun friendList(viewModel: mainViewModel, navController: NavController, friendsVi
                             .background(Color.White)
                     ) {
                         var id = ""
+
+                        tokensFriends(friendsViewModel = friendsViewModel, navController = navController)
+
                         boton(friendsViewModel = friendsViewModel, navController)
                     }
                 }

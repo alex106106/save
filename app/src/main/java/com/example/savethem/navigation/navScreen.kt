@@ -18,6 +18,7 @@ import com.example.savethem.util.constants.Screens.LOGIN_SCREEN
 import com.example.savethem.util.constants.Screens.MAIN_SCREEN
 import com.example.savethem.util.constants.Screens.MAP_SCREEN
 import com.example.savethem.util.constants.Screens.REGISTER_SCREEN
+import com.example.savethem.util.constants.Screens.TEST_SCREEN
 
 sealed class Screens(val route: String){
     object Main: Screens(route = MAIN_SCREEN)
@@ -26,6 +27,7 @@ sealed class Screens(val route: String){
     object Details: Screens(route = DETAILS_SCREEN)
     object Register: Screens(route = REGISTER_SCREEN)
     object Chat: Screens(route = CHAT_SCREEN)
+    object Test: Screens(route = TEST_SCREEN)
 }
 @Composable
 fun SetupNavHost(
@@ -50,10 +52,13 @@ fun SetupNavHost(
             RegisterScreen(registerViewModel = registerViewModel, navController = navHostController)
         }
         composable(route = Screens.Details.route + "/{$KEY_GAME_ID}"){backStackEntry ->
-            detailsScreen(id = backStackEntry.arguments?.getString(KEY_GAME_ID) ?: "", mainViewModel = detailsViewModel)
+            Comments(id = backStackEntry.arguments?.getString(KEY_GAME_ID) ?: "", mainViewModel = detailsViewModel)
         }
         composable(route = Screens.Chat.route + "/{$KEY_GAME_ID}"){backStackEntry ->
             ChatMainScreen(id = backStackEntry.arguments?.getString(KEY_GAME_ID) ?: "", chatViewModel = chatViewModel, navHostController)
+        }
+        composable(route = Screens.Test.route){
+            test(friendsViewModel,navHostController)
         }
 
     }

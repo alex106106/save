@@ -1,6 +1,7 @@
 package com.example.savethem.ViewModel
 
 import android.content.Context
+import android.util.Log
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.LiveData
@@ -12,8 +13,11 @@ import com.example.savethem.Model.ChatModel
 import com.example.savethem.Model.LocationModel
 import com.example.savethem.Model.registerModel
 import com.example.savethem.Repository.Repository
+import com.example.savethem.call.enviar
+import com.google.firebase.messaging.FirebaseMessaging
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -69,6 +73,19 @@ class ChatViewModel @Inject constructor(
 			val userData = DAO.getFriendData(idFriend)
 			_name.value = userData.toString()
 		}
+	}
+	fun getSelectedFriendToken(context: Context) {
+		FirebaseMessaging.getInstance().token
+			.addOnCompleteListener { task ->
+				if (task.isSuccessful) {
+					val token = task.result
+//				enviar(context, token)
+
+					Log.d("TOKEN del usuario", token)
+				} else {
+					Log.e("TOKEN del usuario", "Error al obtener el token: ${task.exception}")
+				}
+			}
 	}
 
 	fun addMessage(addMessage: ChatModel, id: String, messageID: String, idUser: String){

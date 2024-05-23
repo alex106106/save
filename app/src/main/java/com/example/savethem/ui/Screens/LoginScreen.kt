@@ -15,6 +15,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalWindowInfo
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.imageResource
@@ -31,50 +32,75 @@ import com.example.savethem.Model.registerModel
 import com.example.savethem.R
 import com.example.savethem.ViewModel.LoginViewModel
 
-
+//todo crea un archivo en la carpeta screens da click derecho/new/kotlin class/file/ pones el nombre WearScreen, copias completo este login screen y lo pegas en el archivo que acabas de crear en vez de loginScreen le pones WearScreen
 @Composable
 fun loginScreen(loginViewModel: LoginViewModel, navController: NavController, context: Context) {
     var emailUser by remember { mutableStateOf("alexisgalindo106@gmail.com") }
     var passUser by remember { mutableStateOf("juniorniko106") }
     var confirmPass by remember { mutableStateOf("juniorniko106") }
-
-
-        Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .background(colorResource(id = R.color.md_amber_50))
-        ) {
-            Column() {
-                Card(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .wrapContentHeight()
-                        .padding(top = 60.dp, bottom = 20.dp, end = 30.dp, start = 30.dp),
-                    elevation = 18.dp,
-                    shape = RoundedCornerShape(120.dp),
-                    backgroundColor = colorResource(id = R.color.md_amber_50)
-                ) {
-                    Image(
-//                        modifier = Modifier
-//                            .fillMaxWidth()
-//                            .wrapContentHeight()
-//                            .padding(top = 60.dp, start = 20.dp),
-                        painter = painterResource(
-                            id = R.drawable.norma),
-                        contentDescription = "")
+    val isUserLoggedIn = loginViewModel.isUserLoggedIn
+    val context = LocalContext.current
+    val isWearable = remember { isWearable(context) }
+//@Composable
+//fun AppContent() {
+//	val context = LocalContext.current
+//	val isWearable = remember { isWearable(context) }
+//
+//	if (isWearable) {
+//		test()
+//	} else {
+//		SmartphoneScreen()
+//	}
+//}
+    LaunchedEffect(isUserLoggedIn.value) {
+        if (isUserLoggedIn.value == true) {
+            if (isWearable){
+                navController.navigate("test_screen") {
+                    popUpTo("login_screen") { inclusive = true }
                 }
+            }else{
+                navController.navigate("main_screen") {
+                    popUpTo("login_screen") { inclusive = true }
+                }
+            }
 
+        }
+    }
 
-                Box(
-                    contentAlignment = Alignment.Center,
-                    modifier = Modifier.fillMaxSize()
-
-                ) {
-
-                    Column(
+    when(isUserLoggedIn.value){
+        null-> LoadingScreen()
+        false->{
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(colorResource(id = R.color.md_amber_50))
+            ) {
+                Column() {
+                    Card(
                         modifier = Modifier
+                            .fillMaxWidth()
                             .wrapContentHeight()
+                            .padding(top = 60.dp, bottom = 20.dp, end = 30.dp, start = 30.dp),
+                        elevation = 18.dp,
+                        shape = RoundedCornerShape(120.dp),
+                        backgroundColor = colorResource(id = R.color.md_amber_50)
                     ) {
+                        Image(
+                            painter = painterResource(
+                                id = R.drawable.norma),
+                            contentDescription = "")
+                    }
+
+
+                    Box(
+                        contentAlignment = Alignment.Center,
+                        modifier = Modifier.fillMaxSize()
+
+                    ) {
+                        Column(
+                            modifier = Modifier
+                                .wrapContentHeight()
+                        ) {
 
 //                        Card(
 //                            modifier = Modifier
@@ -145,60 +171,113 @@ fun loginScreen(loginViewModel: LoginViewModel, navController: NavController, co
 //                        }
 
 
-                        Button(
-                            modifier = Modifier
-                                .padding(bottom = 15.dp)
-                                .align(CenterHorizontally),
-                            shape = RoundedCornerShape(20.dp),
-                            colors = ButtonDefaults.buttonColors(
-                                backgroundColor = colorResource(id = R.color.md_grey_200),
+                            Button(
+                                modifier = Modifier
+                                    .padding(bottom = 15.dp)
+                                    .align(CenterHorizontally),
+                                shape = RoundedCornerShape(20.dp),
+                                colors = ButtonDefaults.buttonColors(
+                                    backgroundColor = colorResource(id = R.color.md_grey_200),
                                     contentColor = Color.Black,
-                            ),
-                            onClick = {
-                                if (emailUser.isNotEmpty() && passUser.isNotEmpty()) {
-                                    loginViewModel.login(
-                                        registerModel = registerModel(
-                                            email = emailUser,
-                                            pass = passUser,
-                                            name = "",
-                                            UUID = ""
-                                        ),
-                                        navController = navController,
-                                        context = context.applicationContext
-                                    )
-                                } else {
-                                    Toast.makeText(context, "Please enter email and password", Toast.LENGTH_SHORT).show()
+                                ),
+                                onClick = {
+                                    if (emailUser.isNotEmpty() && passUser.isNotEmpty()) {
+                                        loginViewModel.login(
+                                            registerModel = registerModel(
+                                                email = emailUser,
+                                                pass = passUser,
+                                                name = "",
+                                                UUID = ""
+                                            ),
+                                            navController = navController
+//                                        context = context.applicationContext
+                                        )
+                                    } else {
+                                        Toast.makeText(context, "Please enter email and password", Toast.LENGTH_SHORT).show()
+                                    }
+                                    println("********************************************************************" +
+                                            "*************************ERROR EN BUTTON LOGIN**************************" +
+                                            "********************************************************************")
                                 }
-                                println("********************************************************************" +
-                                        "*************************ERROR EN BUTTON LOGIN**************************" +
-                                        "********************************************************************")
+                            ) {
+                                if (loginViewModel.isLoading.value) {
+                                    CircularProgressIndicator(color = Color.Black)
+                                } else {
+                                    Text("Login")
+                                }
                             }
-                        ) {
-                            if (loginViewModel.isLoading.value) {
-                                CircularProgressIndicator(color = Color.Black)
-                            } else {
-                                Text("Login")
-                            }
+
+//                            Button(
+//                                modifier = Modifier
+//                                    .padding(bottom = 15.dp)
+//                                    .align(CenterHorizontally),
+//                                shape = RoundedCornerShape(20.dp),
+//                                colors = ButtonDefaults.buttonColors(
+//                                    backgroundColor = colorResource(id = R.color.md_grey_200),
+//                                    contentColor = Color.Black,
+//                                ),
+//                                onClick = {
+//                                    if (emailUser.isNotEmpty() && passUser.isNotEmpty()) {
+//                                        loginViewModel.login(
+//                                            registerModel = registerModel(
+//                                                email = emailUser,
+//                                                pass = passUser,
+//                                                name = "",
+//                                                UUID = ""
+//                                            ),
+//                                            navController = navController
+////                                        context = context.applicationContext
+//                                        )
+//                                    } else {
+//                                        Toast.makeText(context, "Please enter email and password", Toast.LENGTH_SHORT).show()
+//                                    }
+//                                    println("********************************************************************" +
+//                                            "*************************ERROR EN BUTTON LOGIN**************************" +
+//                                            "********************************************************************")
+//                                }
+//                            ) {
+//                                if (loginViewModel.isLoading.value) {
+//                                    CircularProgressIndicator(color = Color.Black)
+//                                } else {
+//                                    Text("Login")
+//                                }
+//                            }
+
+                            ClickableText(
+                                modifier = Modifier
+//                            .padding(15.dp)
+                                    .align(CenterHorizontally),
+                                style = TextStyle(color = Color.Black, fontSize = 10.sp),
+                                text = AnnotatedString("Don't have an account? Register"),
+                                onClick = {
+                                    loginViewModel.navigateToRegister(navController)
+                                }
+                            )
                         }
 
-                        ClickableText(
-                            modifier = Modifier
-//                            .padding(15.dp)
-                                .align(CenterHorizontally),
-                            style = TextStyle(color = Color.Black, fontSize = 10.sp),
-                            text = AnnotatedString("Don't have an account? Register"),
-                            onClick = {
-                                loginViewModel.navigateToRegister(navController)
-                            }
-                        )
                     }
-
                 }
             }
         }
+        true -> {}
+    }
+}
 
 
+@Composable
+fun LoadingScreen(){
+    Box(contentAlignment = Alignment.Center,
+        modifier = Modifier.fillMaxSize()) {
+        CircularProgressIndicator()
+    }
+}
 
-
-
+@Composable
+fun WearableScreens() {
+    Box(
+        modifier = Modifier.fillMaxSize(),
+        contentAlignment = Alignment.Center
+    ) {
+        Text(text = "This is a Wearable device")
+    }
 }

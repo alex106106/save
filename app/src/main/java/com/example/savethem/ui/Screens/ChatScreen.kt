@@ -6,6 +6,7 @@ import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.location.Geocoder
 import android.location.Location
+import android.util.Log
 import androidx.compose.animation.*
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
@@ -44,6 +45,7 @@ import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.messaging.FirebaseMessaging
 import com.google.maps.android.compose.GoogleMap
 import com.google.maps.android.compose.Marker
 import com.google.maps.android.compose.MarkerState
@@ -242,9 +244,21 @@ fun ChatScreen(id: String, chatViewModel: ChatViewModel) {
 										), idToFriend.toString(), selectedFriend?.UUID.toString(), messageID)
 //											comment = "" // Vacía el texto del campo
 										isButtonVisible = true // Oculta el botón
-											enviar(context, selectedFriend?.token.toString())
+//										enviar(context, token = selectedFriend?.token.toString())
 //										println(selectedFriend?.token.toString())
 //										println(selectedFriend?.token)
+										FirebaseMessaging.getInstance().token
+											.addOnCompleteListener { task ->
+												if (task.isSuccessful) {
+													val token = task.result
+
+													Log.d("TOKEN del usuario", token)
+												} else {
+													Log.e("TOKEN del usuario", "Error al obtener el token: ${task.exception}")
+												}
+											}
+
+
 
 									}
 								) {

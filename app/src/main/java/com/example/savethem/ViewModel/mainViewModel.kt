@@ -1,6 +1,9 @@
 package com.example.savethem.ViewModel
 
+import android.app.Application
+import android.content.Context
 import android.util.Log
+import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -9,15 +12,18 @@ import com.example.savethem.Model.CommentsModel
 import com.example.savethem.Model.MarkerModel
 import com.example.savethem.Model.likeModel
 import com.example.savethem.Repository.Repository
+import com.example.savethem.call.enviar
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
+import com.google.firebase.FirebaseApp
 import com.google.firebase.auth.AuthCredential
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.GoogleAuthProvider
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
+import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
 import com.google.firebase.ktx.Firebase
@@ -31,9 +37,10 @@ import java.util.*
 import javax.inject.Inject
 
 @HiltViewModel
-class mainViewModel @Inject constructor(
+class mainViewModel @Inject constructor(application: Application,
     private val DAO: Repository
-) : ViewModel() {
+) : AndroidViewModel(application) {
+    val context: Context = application.applicationContext
     private val _markerInfoList = MutableStateFlow(emptyList<MarkerModel>())
     val markerInfoList: StateFlow<List<MarkerModel>> = _markerInfoList.asStateFlow()
 
@@ -42,13 +49,17 @@ class mainViewModel @Inject constructor(
 
 
     init {
+
+
         viewModelScope.launch {
             withContext(Dispatchers.IO){
+                FirebaseApp.initializeApp(context)
                 val marker = DAO.getAllCountries()
                 _markerInfoList.value = marker
             }
         }
         }
+
 
     }
 

@@ -1,8 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!-- res/values/themes.xml -->
 <resources xmlns:tools="http://schemas.android.com/tools">
 
     <style name="Theme.SaveThem" parent="android:Theme.Material.Light.NoActionBar">
         <item name="android:statusBarColor">@color/md_amber_50</item>
+<!--        <item name="android:windowIsTranslucent">true</item>-->
     </style>
 
     <style name="Theme.SaveThemLight" parent="android:Theme.Material.Light">
@@ -20,7 +22,4 @@
         <item name="android:textColorSecondary">@color/on_surface</item>
         <item name="android:windowBackground">@color/surface_color</item>
     </style>
-
-
-
 </resources>
