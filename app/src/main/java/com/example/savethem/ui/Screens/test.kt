@@ -20,7 +20,7 @@ import com.example.savethem.call.enviar
 import com.example.savethem.service.MyBackgroundService
 
 @Composable
-fun tests() {
+fun test() {
 	val context = LocalContext.current
 
 	Column(
@@ -43,11 +43,10 @@ fun tests() {
 	}
 }
 @Composable
-fun test(friendsViewModel: FriendsViewModel, navController: NavController) {
+fun tests(friendsViewModel: FriendsViewModel, navController: NavController) {
 	val context = LocalContext.current
 
 	val friends by friendsViewModel.friends.collectAsState()
-	var selectedFriend by remember { mutableStateOf("") }
 	friendsViewModel.getAllFriends()
 	Column(modifier = Modifier.fillMaxSize()) {
 		Button(onClick = {

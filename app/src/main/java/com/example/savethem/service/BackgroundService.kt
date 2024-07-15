@@ -17,7 +17,9 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import androidx.navigation.NavController
+import com.example.savethem.DAO.DAO
 import com.example.savethem.R
+import com.example.savethem.Repository.Repository
 import com.example.savethem.ViewModel.ChatViewModel
 import com.example.savethem.ViewModel.FriendsViewModel
 import com.example.savethem.call.enviar
@@ -26,10 +28,13 @@ import kotlin.random.Random
 class MyBackgroundService() : Service() {
 	private val CHANNEL_ID = "ForegroundServiceChannel"
 	private var counter = 0
+	private lateinit var friendsViewModel: FriendsViewModel
 
 	override fun onCreate() {
 		super.onCreate()
 		createNotificationChannel()
+		friendsViewModel = FriendsViewModel(Repository(DAO()))
+		friendsViewModel.getAllFriends()
 	}
 
 	override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
@@ -46,8 +51,15 @@ class MyBackgroundService() : Service() {
 				Thread.sleep(5000) // Sleep for 5 seconds
 				val randomNumber = Random.nextInt(0, 200)
 				if (randomNumber in 100..150) {
-
-//					enviar(applicationContext, "aqui van los tokens")
+					friendsViewModel.friends.value.forEach { friend ->
+						friend.token?.let { token ->
+							if (token.isNotEmpty()){
+								enviar(this, token)
+							}else{
+								Log.d("TOKEN", "Token is empty for friend: ${friend.name}")
+							}
+						} ?: Log.e("FCM ERROR", "token is null for friend ${friend.name}")
+					}
 
 				}
 			}

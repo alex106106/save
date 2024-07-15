@@ -58,7 +58,7 @@ fun SetupNavHost(
             ChatMainScreen(id = backStackEntry.arguments?.getString(KEY_GAME_ID) ?: "", chatViewModel = chatViewModel, navHostController)
         }
         composable(route = Screens.Test.route){
-            test(friendsViewModel,navHostController)
+            test()
         }
 
     }

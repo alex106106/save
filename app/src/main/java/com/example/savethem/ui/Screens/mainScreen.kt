@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.BasicText
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.*
@@ -27,6 +28,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.onGloballyPositioned
@@ -36,6 +38,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.style.TextAlign
@@ -77,6 +80,9 @@ fun add(viewModel: mainViewModel, navController: NavController, friendsViewModel
         topBar = { TopAppBar(friendsViewModel)},
         content = { MapView(viewModel = viewModel, navController = navController) },
         floatingActionButton = {
+
+        },
+        bottomBar = {
 
         }
     )
@@ -201,7 +207,7 @@ fun MapView(viewModel: mainViewModel, navController: NavController) {
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(colorResource(id = R.color.md_amber_100))
+            .background(colorResource(id = R.color.md_pink_A200))
     ) {
 
         Column() {
@@ -313,13 +319,30 @@ fun TopAppBar(friendsViewModel: FriendsViewModel) {
                         )
                     }
                 } else {
-                    Text(text = "NORM", color = Color.Black, fontSize = 16.sp)
+                    Box(
+                        modifier = Modifier.padding(start = 5.dp)
+                    ) {
+                        BasicText(
+                            text = "Norma",
+                            style = TextStyle(
+                                fontFamily = FontFamily(Font(R.font.signikabold)),
+                                fontSize = 20.sp,
+                                fontWeight = androidx.compose.ui.text.font.FontWeight.Bold
+                            ),
+                            modifier = Modifier
+                                .padding(5.dp)
+                                .graphicsLayer(
+                                    scaleX = 1.5f // Ajusta este valor para estirar más o menos horizontalmente
+                                )
+                        )
+                    }
+
                 }
-                Button(onClick = {
-                    friendsViewModel.addFriend(registerModel(), "alexisgalindo108@gmail.com")
-                }) {
-                    Text(text = "add")
-                }
+//                Button(onClick = {
+//                    friendsViewModel.addFriend(registerModel(), "alexisgalindo108@gmail.com")
+//                }) {
+//                    Text(text = "add")
+//                }
             }
         },
 
@@ -384,7 +407,7 @@ fun TopAppBar(friendsViewModel: FriendsViewModel) {
             }
         },
         modifier = Modifier.height(52.dp),
-        backgroundColor = colorResource(id = R.color.md_amber_50),
+        backgroundColor = colorResource(id = R.color.md_pink_A200),
         elevation = 0.dp
     )
 }
@@ -416,9 +439,9 @@ fun friendList(viewModel: mainViewModel, navController: NavController, friendsVi
                     ) {
                         var id = ""
 
-                        tokensFriends(friendsViewModel = friendsViewModel, navController = navController)
+//                        tokensFriends(friendsViewModel = friendsViewModel, navController = navController)
 
-                        boton(friendsViewModel = friendsViewModel, navController)
+//                        boton(friendsViewModel = friendsViewModel, navController)
                     }
                 }
             },
@@ -430,20 +453,9 @@ fun friendList(viewModel: mainViewModel, navController: NavController, friendsVi
                     topBar = { TopAppBar(friendsViewModel) },
                     content = {
                         // Contenido principal
-                        MapView(viewModel = viewModel, navController = navController)
+                        boton(friendsViewModel = friendsViewModel, navController)
                     },
-
-                    floatingActionButton = {
-                        FloatingActionButton(
-                            onClick = { scope.launch { sheetState.show() } },
-                            content = {
-                                Icon(painterResource(
-                                    id = R.drawable.friends),
-                                    contentDescription = "Add friend")
-                                      },
-                            backgroundColor = Color.White,
-                        )
-                    }
+                    bottomBar = {BottomNavigationBar(navController)}
                 )
             }
         )
@@ -451,6 +463,38 @@ fun friendList(viewModel: mainViewModel, navController: NavController, friendsVi
 
 
 
+@Composable
+fun BottomNavigationBar(navController: NavController) {
+    var selectedItem by remember { mutableStateOf(0) }
+
+    BottomNavigation(
+        backgroundColor = Color.Transparent,
+        elevation = 0.dp // Elimina la sombra
+    ) {
+        BottomNavigationItem(
+            icon = { Icon(imageVector = Icons.Default.Home, contentDescription = "Home") },
+            label = { Text("Home") },
+            selected = selectedItem == 0,
+            onClick = {
+                selectedItem = 0
+                // Navegar a la pantalla de inicio
+            },
+            selectedContentColor = colorResource(id = R.color.md_pink_A700),
+            unselectedContentColor = Color.Gray
+        )
+        BottomNavigationItem(
+            icon = { Icon(imageVector = Icons.Default.AccountCircle, contentDescription = "Profile") },
+            label = { Text("Profile") },
+            selected = selectedItem == 2,
+            onClick = {
+                selectedItem = 2
+                // Navegar a la pantalla de perfil
+            },
+            selectedContentColor = colorResource(id = R.color.md_pink_A700),
+            unselectedContentColor = Color.Gray
+        )
+    }
+}
 
 
 

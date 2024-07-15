@@ -54,7 +54,8 @@ class detailsViewModel @Inject constructor(
     }
     fun addComments(id: String, commentsModel: CommentsModel){
         viewModelScope.launch {
-            val comment = DAO.addComment(commentsModel = commentsModel, id = id)
+            val comment = DAO.
+            addComment(commentsModel = commentsModel, id = id)
             withContext(Dispatchers.IO){
                 comment.value?.let {
                     // Update the list of comments by appending the new comment

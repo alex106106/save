@@ -75,7 +75,7 @@ fun loginScreen(loginViewModel: LoginViewModel, navController: NavController, co
                     .fillMaxSize()
                     .background(colorResource(id = R.color.md_amber_50))
             ) {
-                Column() {
+
                     Card(
                         modifier = Modifier
                             .fillMaxWidth()
@@ -111,7 +111,7 @@ fun loginScreen(loginViewModel: LoginViewModel, navController: NavController, co
 //                        ) {
                             OutlinedTextField(
                                 modifier = Modifier
-                                    .padding(15.dp),
+                                    .padding(15.dp, top = 100.dp),
 //                                    .background(
 //                                        colorResource(id = R.color.md_grey_200),
 //                                        shape = RoundedCornerShape(25.dp)
@@ -171,41 +171,7 @@ fun loginScreen(loginViewModel: LoginViewModel, navController: NavController, co
 //                        }
 
 
-                            Button(
-                                modifier = Modifier
-                                    .padding(bottom = 15.dp)
-                                    .align(CenterHorizontally),
-                                shape = RoundedCornerShape(20.dp),
-                                colors = ButtonDefaults.buttonColors(
-                                    backgroundColor = colorResource(id = R.color.md_grey_200),
-                                    contentColor = Color.Black,
-                                ),
-                                onClick = {
-                                    if (emailUser.isNotEmpty() && passUser.isNotEmpty()) {
-                                        loginViewModel.login(
-                                            registerModel = registerModel(
-                                                email = emailUser,
-                                                pass = passUser,
-                                                name = "",
-                                                UUID = ""
-                                            ),
-                                            navController = navController
-//                                        context = context.applicationContext
-                                        )
-                                    } else {
-                                        Toast.makeText(context, "Please enter email and password", Toast.LENGTH_SHORT).show()
-                                    }
-                                    println("********************************************************************" +
-                                            "*************************ERROR EN BUTTON LOGIN**************************" +
-                                            "********************************************************************")
-                                }
-                            ) {
-                                if (loginViewModel.isLoading.value) {
-                                    CircularProgressIndicator(color = Color.Black)
-                                } else {
-                                    Text("Login")
-                                }
-                            }
+
 
 //                            Button(
 //                                modifier = Modifier
@@ -253,7 +219,42 @@ fun loginScreen(loginViewModel: LoginViewModel, navController: NavController, co
                                     loginViewModel.navigateToRegister(navController)
                                 }
                             )
-                        }
+//                            Column() {
+                                Button(
+                                    modifier = Modifier
+                                        .padding(top = 35.dp)
+                                        .align(CenterHorizontally),
+                                    shape = RoundedCornerShape(20.dp),
+                                    colors = ButtonDefaults.buttonColors(
+                                        backgroundColor = colorResource(id = R.color.md_grey_200),
+                                        contentColor = Color.Black,
+                                    ),
+                                    onClick = {
+                                        if (emailUser.isNotEmpty() && passUser.isNotEmpty()) {
+                                            loginViewModel.login(
+                                                registerModel = registerModel(
+                                                    email = emailUser,
+                                                    pass = passUser,
+                                                    name = "",
+                                                    UUID = ""
+                                                ),
+                                                navController = navController
+//                                        context = context.applicationContext
+                                            )
+                                        } else {
+                                            Toast.makeText(context, "Please enter email and password", Toast.LENGTH_SHORT).show()
+                                        }
+                                        println("********************************************************************" +
+                                                "*************************ERROR EN BUTTON LOGIN**************************" +
+                                                "********************************************************************")
+                                    }
+                                ) {
+                                    if (loginViewModel.isLoading.value) {
+                                        CircularProgressIndicator(color = Color.Black)
+                                    } else {
+                                        Text("Login")
+                                    }
+                                }
 
                     }
                 }
